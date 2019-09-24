@@ -1,0 +1,31 @@
+language: php
+
+sudo: required
+
+git:
+  depth: 3
+
+php:
+  - 7.1
+  - 7.2
+  - 7.3
+  - nightly
+  - master
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - php: nightly
+    - php: master
+
+before_script:
+  - composer self-update && composer global require hirak/prestissimo
+  - composer install --no-interaction --prefer-source --optimize-autoloader
+
+script: vendor/bin/phpunit
+
+after_script:
+  - if [[ -f coverage.clover ]]; then
+      curl -sSOL https://scrutinizer-ci.com/ocular.phar &&
+      php ocular.phar code-coverage:upload --format=php-clover coverage.clover;
+    fi

@@ -29,10 +29,7 @@ class TracingTest extends TestCase
         $context2 = Context::restore($context->getTraceId(), $context->getSpanId());
         $tracer2 = new Tracer($context2);
 
-        $this->assertSame(
-            $tracer->getActiveSpan()->getContext()->getTraceId(),
-            $tracer2->getActiveSpan()->getContext()->getTraceId(),
-        );
+        $this->assertSame($tracer->getActiveSpan()->getContext()->getTraceId(), $tracer2->getActiveSpan()->getContext()->getTraceId());
     }
 
     public function testTracerSpanFork()

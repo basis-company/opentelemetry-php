@@ -1,7 +1,7 @@
 {
     "name": "basis-company/opentelemetry",
     "type": "library",
-    "license": "Apache License 2.0",
+    "license": "MIT",
     "require": {
         "php": "^7.1"
     },

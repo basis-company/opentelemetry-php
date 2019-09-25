@@ -11,6 +11,8 @@ class Span
     private $start;
     private $end;
 
+    private $status;
+
     public function __construct(string $name, SpanContext $context, SpanContext $parent = null)
     {
         $this->name = $name;
@@ -29,9 +31,15 @@ class Span
         return $this->parent;
     }
 
-    public function end()
+    public function end(Status $status = null)
     {
         $this->end = microtime(1);
+        if (!$this->status && !$status) {
+            $status = new Status(Status::OK);
+        }
+        if ($status) {
+            $this->setStatus($status);
+        }
     }
 
     public function getStart()
@@ -42,5 +50,16 @@ class Span
     public function getEnd()
     {
         return $this->end;
+    }
+
+    public function setStatus(Status $status) : self
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    public function getStatus() : ?Status
+    {
+        return $this->status;
     }
 }

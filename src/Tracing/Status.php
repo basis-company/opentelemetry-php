@@ -68,6 +68,6 @@ class Status
 
     public function isOk() : bool
     {
-        return $this->status == self::OK;
+        return $this->code == self::OK;
     }
 }

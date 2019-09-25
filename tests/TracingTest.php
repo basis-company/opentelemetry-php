@@ -43,11 +43,15 @@ class TracingTest extends TestCase
         $this->assertSame($mysql->getParentSpanContext(), $global->getSpanContext());
         $mysql->end();
 
+        $this->assertTrue($mysql->getStatus()->isOk());
+        
         // active span rolled back
         $this->assertSame($tracer->getActiveSpan(), $global);
+        $this->assertNull($global->getStatus());
         
         // active span should be kept for global span
         $global->end();
         $this->assertSame($tracer->getActiveSpan(), $global);
+        $this->assertTrue($global->getStatus()->isOk());
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use PHPUnit\Framework\TestCase;
 
 use OpenTelemetry\Tracing\{SpanContext, Status, Tracer};

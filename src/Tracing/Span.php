@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace OpenTelemetry\Tracing;
 
 use Exception;
@@ -21,7 +23,7 @@ class Span
         $this->name = $name;
         $this->context = $context;
         $this->parent = $parent;
-        $this->start = microtime(1);
+        $this->start = microtime(true);
     }
 
     public function getSpanContext() : SpanContext
@@ -36,7 +38,7 @@ class Span
 
     public function end(Status $status = null)
     {
-        $this->end = microtime(1);
+        $this->end = microtime(true);
         if (!$this->status && !$status) {
             $status = new Status(Status::OK);
         }

@@ -9,8 +9,8 @@ use Exception;
 class Span
 {
     private $name;
-    private $context;
-    private $parent;
+    private $spanContext;
+    private $parentSpanContext;
 
     private $start;
     private $end;
@@ -19,22 +19,22 @@ class Span
     private $attributes = [];
     private $events = [];
 
-    public function __construct(string $name, SpanContext $context, SpanContext $parent = null)
+    public function __construct(string $name, SpanContext $spanContext, SpanContext $parentSpanContext = null)
     {
         $this->name = $name;
-        $this->context = $context;
-        $this->parent = $parent;
+        $this->spanContext = $spanContext;
+        $this->parentSpanContext = $parentSpanContext;
         $this->start = microtime(true);
     }
 
     public function getSpanContext() : SpanContext
     {
-        return $this->context;
+        return $this->spanContext;
     }
 
     public function getParentSpanContext() : SpanContext
     {
-        return $this->parent;
+        return $this->parentSpanContext;
     }
 
     public function end(Status $status = null)

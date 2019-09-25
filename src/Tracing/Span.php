@@ -129,6 +129,7 @@ class Span
     public function addEvent(string $name, array $attributes = [], float $timestamp = null) : Event
     {
         $this->throwExceptionIfReadonly();
+
         $event = new Event($name, $attributes, $timestamp);
         $this->events[] = $event;
         return $event;

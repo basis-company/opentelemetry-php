@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
-use OpenTelemetry\Tracing\{SpanContext, Status, Tracer};
+use OpenTelemetry\Tracing\{Builder, SpanContext, Status, Tracer};
 
 class TracingTest extends TestCase
 {

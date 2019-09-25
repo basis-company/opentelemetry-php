@@ -17,6 +17,7 @@ class Span
     private $status;
 
     private $attributes = [];
+    private $events = [];
 
     public function __construct(string $name, SpanContext $context, SpanContext $parent = null)
     {
@@ -122,6 +123,19 @@ class Span
             $this->setAttribute($k, $v);
         }
         return $this;
+    }
+
+    public function addEvent(string $name, array $attributes = [], float $timestamp = null) : Event
+    {
+        $this->throwExceptionIfReadonly();
+        $event = new Event($name, $attributes, $timestamp);
+        $this->events[] = $event;
+        return $event;
+    }
+
+    public function getEvents()
+    {
+        return $this->events;
     }
 
     private function throwExceptionIfReadonly()

@@ -139,4 +139,32 @@ class TracingTest extends TestCase
         $span->end();
         $span->setAttribute('b', 5);
     }
+
+    public function testEventRegistration()
+    {
+        $span = (new Tracer)->createSpan('database');
+        $event = $span->addEvent('select', [
+            'space' => 'guard.session',
+            'id' => 67235
+        ]);
+        $this->assertSame($event->getName(), 'select');
+        $this->assertSame($event->getAttributes(), [
+            'space' => 'guard.session',
+            'id' => 67235,
+        ]);
+        $this->assertSame($event->getAttribute('space'), 'guard.session');
+        $this->assertCount(1, $span->getEvents());
+        $this->assertSame($span->getEvents(), [$event]);
+        
+        $span->addEvent('update')
+            ->setAttribute('space', 'guard.session')
+            ->setAttribute('id', 67235)
+            ->setAttribute('active_at', time());
+
+        $this->assertCount(2, $span->getEvents());
+
+        $this->expectExceptionMessage("Span is readonly");
+        $span->end();
+        $span->addEvent('update');
+    }
 }

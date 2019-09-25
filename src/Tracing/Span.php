@@ -37,7 +37,7 @@ class Span
         return $this->parentSpanContext;
     }
 
-    public function end(Status $status = null)
+    public function end(Status $status = null) : self
     {
         $this->end = microtime(true);
         if (!$this->status && !$status) {
@@ -46,6 +46,7 @@ class Span
         if ($status) {
             $this->setStatus($status);
         }
+        return $this;
     }
 
     public function getStart()

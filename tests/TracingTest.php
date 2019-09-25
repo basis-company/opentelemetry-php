@@ -41,7 +41,16 @@ class TracingTest extends TestCase
         $this->assertSame($tracer->getActiveSpan(), $mysql);
         $this->assertSame($global->getSpanContext()->getTraceId(), $mysql->getSpanContext()->getTraceId());
         $this->assertSame($mysql->getParentSpanContext(), $global->getSpanContext());
+        
+        $this->assertNull($mysql->getDuration());
         $mysql->end();
+
+        $duration = $mysql->getDuration();
+        $this->assertNotNull($mysql->getDuration());
+        $this->assertSame($duration, $mysql->getDuration());
+        
+        $mysql->end();
+        $this->assertGreaterThan($duration, $mysql->getDuration());
 
         $this->assertTrue($mysql->getStatus()->isOk());
         

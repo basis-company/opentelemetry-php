@@ -62,4 +62,12 @@ class Span
     {
         return $this->status;
     }
+
+    public function getDuration() : ?float
+    {
+        if (!$this->end) {
+            return null;
+        }
+        return $this->end - $this->start;
+    }
 }

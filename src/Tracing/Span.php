@@ -2,6 +2,8 @@
 
 namespace OpenTelemetry\Tracing;
 
+use Exception;
+
 class Span
 {
     private $name;
@@ -55,6 +57,9 @@ class Span
 
     public function setStatus(Status $status) : self
     {
+        if ($this->status) {
+            throw new Exception("Status was already set");
+        }
         $this->status = $status;
         return $this;
     }

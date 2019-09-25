@@ -84,6 +84,9 @@ class TracingTest extends TestCase
 
         $noDescription = new Status(500);
         $this->assertNull($noDescription->getDescription());
+
+        $this->expectExceptionMessage("Status was already set");
+        $custom->setStatus(new Status(Status::OK));
     }
 
     public function testAttributes()

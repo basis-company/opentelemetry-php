@@ -167,4 +167,15 @@ class TracingTest extends TestCase
         $span->end();
         $span->addEvent('update');
     }
+
+    public function testBuilder()
+    {
+        $spanContext = SpanContext::generate();
+        $tracer = Builder::create()
+            ->setSpanContext($spanContext)
+            ->getTracer();
+
+        $this->assertInstanceOf(Tracer::class, $tracer);
+        $this->assertSame($tracer->getActiveSpan()->getSpanContext(), $spanContext);
+    }
 }

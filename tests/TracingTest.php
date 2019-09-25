@@ -37,14 +37,16 @@ class TracingTest extends TestCase
         $tracer = new Tracer();
         $global = $tracer->getActiveSpan();
 
-        $tarantool = $tracer->createSpan('tarantool');
-        $this->assertSame($tracer->getActiveSpan(), $tarantool);
-        $this->assertSame($global->getContext()->getTraceId(), $tarantool->getContext()->getTraceId());
-        $this->assertSame($tarantool->getParent(), $global->getContext());
-        $tarantool->end();
+        $mysql = $tracer->createSpan('mysql');
+        $this->assertSame($tracer->getActiveSpan(), $mysql);
+        $this->assertSame($global->getContext()->getTraceId(), $mysql->getContext()->getTraceId());
+        $this->assertSame($mysql->getParent(), $global->getContext());
+        $mysql->end();
 
+        // active span rolled back
         $this->assertSame($tracer->getActiveSpan(), $global);
         
+        // active span should be kept for global span
         $global->end();
         $this->assertSame($tracer->getActiveSpan(), $global);
     }

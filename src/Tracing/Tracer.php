@@ -39,6 +39,11 @@ class Tracer
         return $this->setActive($span);
     }
 
+    public function getSpans() : array
+    {
+        return $this->spans;
+    }
+
     private function generateSpanInstance($name, SpanContext $context) : Span
     {
         $parent = null;

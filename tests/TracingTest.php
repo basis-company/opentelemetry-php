@@ -97,6 +97,8 @@ class TracingTest extends TestCase
 
         $custom->setStatus(new Status(Status::OK));
         $this->assertTrue($custom->getStatus()->isOk());
+
+        $this->assertCount(3, $tracer->getSpans());
     }
 
     public function testSpanAttributesApi()

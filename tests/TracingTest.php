@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-use OpenTelemetry\Tracing\{SpanContext, Tracer};
+use OpenTelemetry\Tracing\{SpanContext, Status, Tracer};
 
 class TracingTest extends TestCase
 {
@@ -64,6 +64,26 @@ class TracingTest extends TestCase
         $global->end();
         $this->assertSame($tracer->getActiveSpan(), $global);
         $this->assertTrue($global->getStatus()->isOk());
+    }
+
+    public function testStatus()
+    {
+        $tracer = new Tracer();
+
+        $cancelled = $tracer->createSpan('cancelled');
+        $cancelled->end(new Status(Status::CANCELLED));
+        $this->assertFalse($cancelled->getStatus()->isOk());
+        $this->assertSame($cancelled->getStatus()->getCanonicalCode(), Status::CANCELLED);
+        $this->assertSame($cancelled->getStatus()->getDescription(), Status::DESCRIPTION[Status::CANCELLED]);
+
+        $custom = $tracer->createSpan('custom');
+        $custom->end(new Status(404, 'Not found'));
+        $this->assertFalse($custom->getStatus()->isOk());
+        $this->assertSame($custom->getStatus()->getCanonicalCode(), 404);
+        $this->assertSame($custom->getStatus()->getDescription(), 'Not found');
+
+        $noDescription = new Status(500);
+        $this->assertNull($noDescription->getDescription());
     }
 
     public function testAttributes()

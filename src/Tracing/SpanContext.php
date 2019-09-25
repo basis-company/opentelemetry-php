@@ -2,7 +2,7 @@
 
 namespace OpenTelemetry\Tracing;
 
-class Context
+class SpanContext
 {
     private $traceId;
     private $spanId;

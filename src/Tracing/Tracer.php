@@ -9,9 +9,9 @@ class Tracer
 
     private $spans = [];
 
-    public function __construct(Context $context = null)
+    public function __construct(SpanContext $context = null)
     {
-        $context = $context ?: Context::generate();
+        $context = $context ?: SpanContext::generate();
         $this->active = $this->generateSpanInstance('tracer', $context);
     }
 
@@ -31,17 +31,17 @@ class Tracer
 
     public function createSpan(string $name) : Span
     {
-        $parent = $this->getActiveSpan()->getContext();
-        $context = Context::fork($parent->getTraceId());
+        $parent = $this->getActiveSpan()->getSpanContext();
+        $context = SpanContext::fork($parent->getTraceId());
         $span = $this->generateSpanInstance($name, $context);
         return $this->setActive($span);
     }
 
-    private function generateSpanInstance($name, Context $context) : Span
+    private function generateSpanInstance($name, SpanContext $context) : Span
     {
         $parent = null;
         if ($this->active) {
-            $parent = $this->getActiveSpan()->getContext();
+            $parent = $this->getActiveSpan()->getSpanContext();
         }
         $span = new Span($name, $context, $parent);
         $this->spans[] = $span;

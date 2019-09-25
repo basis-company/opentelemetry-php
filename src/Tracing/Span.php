@@ -11,7 +11,7 @@ class Span
     private $start;
     private $end;
 
-    public function __construct(string $name, Context $context, Context $parent = null)
+    public function __construct(string $name, SpanContext $context, SpanContext $parent = null)
     {
         $this->name = $name;
         $this->context = $context;
@@ -19,12 +19,12 @@ class Span
         $this->start = microtime(1);
     }
 
-    public function getContext() : Context
+    public function getSpanContext() : SpanContext
     {
         return $this->context;
     }
 
-    public function getParent() : Context
+    public function getParentSpanContext() : SpanContext
     {
         return $this->parent;
     }

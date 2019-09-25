@@ -2,34 +2,34 @@
 
 use PHPUnit\Framework\TestCase;
 
-use OpenTelemetry\Tracing\{Context, Tracer};
+use OpenTelemetry\Tracing\{SpanContext, Tracer};
 
 class TracingTest extends TestCase
 {
     public function testContext()
     {
-        $context = Context::generate();
-        $this->assertSame(strlen($context->getTraceId()), 16);
-        $this->assertSame(strlen($context->getSpanId()), 8);
+        $spanContext = SpanContext::generate();
+        $this->assertSame(strlen($spanContext->getTraceId()), 16);
+        $this->assertSame(strlen($spanContext->getSpanId()), 8);
 
-        $context2 = Context::generate();
-        $this->assertNotSame($context->getTraceId(), $context2->getTraceId());
-        $this->assertNotSame($context->getSpanId(), $context2->getSpanId());
+        $spanContext2 = SpanContext::generate();
+        $this->assertNotSame($spanContext->getTraceId(), $spanContext2->getTraceId());
+        $this->assertNotSame($spanContext->getSpanId(), $spanContext2->getSpanId());
 
-        $context3 = Context::restore($context->getTraceId(), $context->getSpanId());
-        $this->assertSame($context3->getTraceId(), $context->getTraceId());
-        $this->assertSame($context3->getSpanId(), $context->getSpanId());
+        $spanContext3 = SpanContext::restore($spanContext->getTraceId(), $spanContext->getSpanId());
+        $this->assertSame($spanContext3->getTraceId(), $spanContext->getTraceId());
+        $this->assertSame($spanContext3->getSpanId(), $spanContext->getSpanId());
     }
 
     public function testTracerRestore()
     {
         $tracer = new Tracer();
-        $context = $tracer->getActiveSpan()->getContext();
+        $spanContext = $tracer->getActiveSpan()->getSpanContext();
 
-        $context2 = Context::restore($context->getTraceId(), $context->getSpanId());
-        $tracer2 = new Tracer($context2);
+        $spanContext2 = SpanContext::restore($spanContext->getTraceId(), $spanContext->getSpanId());
+        $tracer2 = new Tracer($spanContext2);
 
-        $this->assertSame($tracer->getActiveSpan()->getContext()->getTraceId(), $tracer2->getActiveSpan()->getContext()->getTraceId());
+        $this->assertSame($tracer->getActiveSpan()->getSpanContext()->getTraceId(), $tracer2->getActiveSpan()->getSpanContext()->getTraceId());
     }
 
     public function testTracerSpanFork()
@@ -39,8 +39,8 @@ class TracingTest extends TestCase
 
         $mysql = $tracer->createSpan('mysql');
         $this->assertSame($tracer->getActiveSpan(), $mysql);
-        $this->assertSame($global->getContext()->getTraceId(), $mysql->getContext()->getTraceId());
-        $this->assertSame($mysql->getParent(), $global->getContext());
+        $this->assertSame($global->getSpanContext()->getTraceId(), $mysql->getSpanContext()->getTraceId());
+        $this->assertSame($mysql->getParentSpanContext(), $global->getSpanContext());
         $mysql->end();
 
         // active span rolled back

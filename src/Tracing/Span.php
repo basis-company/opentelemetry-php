@@ -102,6 +102,8 @@ class Span
 
     public function setAttribute(string $key, $value) : self
     {
+        $this->throwExceptionIfReadonly();
+
         $this->attributes[$key] = $value;
         return $this;
     }
@@ -113,10 +115,19 @@ class Span
 
     public function setAttributes(array $attributes) : self
     {
+        $this->throwExceptionIfReadonly();
+
         $this->attributes = [];
         foreach ($attributes as $k => $v) {
             $this->setAttribute($k, $v);
         }
         return $this;
+    }
+
+    private function throwExceptionIfReadonly()
+    {
+        if (!$this->isRecordingEvents()) {
+            throw new Exception("Span is readonly");
+        }
     }
 }

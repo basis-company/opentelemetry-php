@@ -134,5 +134,9 @@ class TracingTest extends TestCase
         $span->setAttribute('a', 3);
         $span->setAttribute('b', 4);
         $this->assertSame(array_keys($span->getAttributes()), ['b', 'a']);
+
+        $this->expectExceptionMessage("Span is readonly");
+        $span->end();
+        $span->setAttribute('b', 5);
     }
 }

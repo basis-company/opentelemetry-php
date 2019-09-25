@@ -8,7 +8,7 @@ use OpenTelemetry\Tracing\{SpanContext, Status, Tracer};
 
 class TracingTest extends TestCase
 {
-    public function testContext()
+    public function testContextGenerationAndRestore()
     {
         $spanContext = SpanContext::generate();
         $this->assertSame(strlen($spanContext->getTraceId()), 16);
@@ -23,7 +23,7 @@ class TracingTest extends TestCase
         $this->assertSame($spanContext3->getSpanId(), $spanContext->getSpanId());
     }
 
-    public function testTracerRestore()
+    public function testTracerSpanContextRestore()
     {
         $tracer = new Tracer();
         $spanContext = $tracer->getActiveSpan()->getSpanContext();
@@ -42,6 +42,7 @@ class TracingTest extends TestCase
         $this->assertSame($database->getName(), 'tarantool');
     }
 
+    public function testCreateSpan()
     {
         $tracer = new Tracer();
         $global = $tracer->getActiveSpan();
@@ -75,7 +76,7 @@ class TracingTest extends TestCase
         $this->assertTrue($global->getStatus()->isOk());
     }
 
-    public function testStatus()
+    public function testStatusManipulation()
     {
         $tracer = new Tracer();
 
@@ -98,7 +99,7 @@ class TracingTest extends TestCase
         $this->assertTrue($custom->getStatus()->isOk());
     }
 
-    public function testAttributes()
+    public function testSpanAttributesApi()
     {
         $span = (new Tracer())->getActiveSpan();
 

@@ -10,8 +10,9 @@ class Span
 
     private $start;
     private $end;
-
     private $status;
+
+    private $attributes = [];
 
     public function __construct(string $name, SpanContext $context, SpanContext $parent = null)
     {
@@ -63,11 +64,44 @@ class Span
         return $this->status;
     }
 
+    public function isRecordingEvents() : bool
+    {
+        return is_null($this->end);
+    }
+
     public function getDuration() : ?float
     {
         if (!$this->end) {
             return null;
         }
         return $this->end - $this->start;
+    }
+
+    public function getAttribute(string $key)
+    {
+        if (!array_key_exists($key, $this->attributes)) {
+            return null;
+        }
+        return $this->attributes[$key];
+    }
+
+    public function setAttribute(string $key, $value) : self
+    {
+        $this->attributes[$key] = $value;
+        return $this;
+    }
+
+    public function getAttributes() : array
+    {
+        return $this->attributes;
+    }
+
+    public function setAttributes(array $attributes) : self
+    {
+        $this->attributes = [];
+        foreach ($attributes as $k => $v) {
+            $this->setAttribute($k, $v);
+        }
+        return $this;
     }
 }

@@ -41,14 +41,15 @@ class TracingTest extends TestCase
         $this->assertSame($tracer->getActiveSpan(), $mysql);
         $this->assertSame($global->getSpanContext()->getTraceId(), $mysql->getSpanContext()->getTraceId());
         $this->assertSame($mysql->getParentSpanContext(), $global->getSpanContext());
-        
+        $this->assertTrue($mysql->isRecordingEvents());
         $this->assertNull($mysql->getDuration());
+
         $mysql->end();
+        $this->assertFalse($mysql->isRecordingEvents());
+        $this->assertNotNull($mysql->getDuration());
 
         $duration = $mysql->getDuration();
-        $this->assertNotNull($mysql->getDuration());
         $this->assertSame($duration, $mysql->getDuration());
-        
         $mysql->end();
         $this->assertGreaterThan($duration, $mysql->getDuration());
 
@@ -62,5 +63,42 @@ class TracingTest extends TestCase
         $global->end();
         $this->assertSame($tracer->getActiveSpan(), $global);
         $this->assertTrue($global->getStatus()->isOk());
+    }
+
+    public function testAttributes()
+    {
+        $span = (new Tracer())->getActiveSpan();
+
+        // set attributes
+        $span->setAttributes([ 'username' => 'nekufa' ]);
+
+        // get attribute
+        $this->assertSame($span->getAttribute('username'), 'nekufa');
+        
+        // otherwrite
+        $span->setAttributes([ 'email' => 'nekufa@gmail.com', ]);
+
+        // null attributes
+        $this->assertNull($span->getAttribute('username'));
+        $this->assertSame($span->getAttribute('email'), 'nekufa@gmail.com');
+
+        // set attribute
+        $span->setAttribute('username', 'nekufa');
+        $this->assertSame($span->getAttribute('username'), 'nekufa');
+        $this->assertSame($span->getAttributes(), [
+            'email' => 'nekufa@gmail.com',
+            'username' => 'nekufa',
+        ]);
+
+        // keep order
+        $span->setAttributes([ 'a' => 1, 'b' => 2]);
+        $this->assertSame(array_keys($span->getAttributes()), ['a', 'b']);
+        $span->setAttributes([ 'b' => 2, 'a' => 1, ]);
+        $this->assertSame(array_keys($span->getAttributes()), ['b', 'a']);
+
+        // attribute update don't change the order
+        $span->setAttribute('a', 3);
+        $span->setAttribute('b', 4);
+        $this->assertSame(array_keys($span->getAttributes()), ['b', 'a']);
     }
 }

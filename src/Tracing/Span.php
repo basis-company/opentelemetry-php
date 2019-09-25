@@ -81,6 +81,17 @@ class Span
         return $this->end - $this->start;
     }
 
+    public function getName() : string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name) : self
+    {
+        $this->name = $name;
+        return $this;
+    }
+
     public function getAttribute(string $key)
     {
         if (!array_key_exists($key, $this->attributes)) {

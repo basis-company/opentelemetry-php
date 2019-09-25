@@ -34,7 +34,14 @@ class TracingTest extends TestCase
         $this->assertSame($tracer->getActiveSpan()->getSpanContext()->getTraceId(), $tracer2->getActiveSpan()->getSpanContext()->getTraceId());
     }
 
-    public function testTracerSpanFork()
+    public function testSpanNameUpdate()
+    {
+        $database = (new Tracer)->createSpan('database');
+        $this->assertSame($database->getName(), 'database');
+        $database->setName('tarantool');
+        $this->assertSame($database->getName(), 'tarantool');
+    }
+
     {
         $tracer = new Tracer();
         $global = $tracer->getActiveSpan();

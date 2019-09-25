@@ -155,6 +155,7 @@ class TracingTest extends TestCase
             'id' => 67235,
         ]);
         $this->assertSame($event->getAttribute('space'), 'guard.session');
+        $this->assertNull($event->getAttribute('invalid-attribute'));
         $this->assertCount(1, $span->getEvents());
         $this->assertSame($span->getEvents(), [$event]);
         

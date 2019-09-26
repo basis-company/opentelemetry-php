@@ -32,7 +32,7 @@ class Span
         return $this->spanContext;
     }
 
-    public function getParentSpanContext() : SpanContext
+    public function getParentSpanContext() : ?SpanContext
     {
         return $this->parentSpanContext;
     }

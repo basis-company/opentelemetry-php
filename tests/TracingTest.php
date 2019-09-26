@@ -181,4 +181,14 @@ class TracingTest extends TestCase
         $this->assertInstanceOf(Tracer::class, $tracer);
         $this->assertSame($tracer->getActiveSpan()->getSpanContext(), $spanContext);
     }
+
+    public function testParentSpanContext()
+    {
+        $tracer = new Tracer;
+        $global = $tracer->getActiveSpan();
+        $request = $tracer->createSpan('request');
+        $this->assertSame($request->getParentSpanContext()->getSpanId(), $global->getSpanContext()->getSpanId());
+        $this->assertNull($global->getParentSpanContext());
+        $this->assertNotNull($request->getParentSpanContext());
+    }
 }

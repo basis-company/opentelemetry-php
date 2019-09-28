@@ -43,3 +43,9 @@ $span->addEvent('generated_session', [
 
 $span->end(); // pass status as an optional argument
 ```
+
+# Testing
+To make sure the tests in this repo work as you expect, you can use the included docker test wrapper:
+
+1.)  Make sure that you have docker installed
+2.)  Execute `script/dockertest` from your bash compatible shell.  You should see the test output like so

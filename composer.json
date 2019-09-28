@@ -23,6 +23,7 @@
         "classmap": ["tests"]
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.5.16"
+        "phpunit/phpunit": "^7.5.16",
+        "composer/xdebug-handler": "^1.3"
     }
 }

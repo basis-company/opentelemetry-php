@@ -52,4 +52,9 @@ class Event
     {
         return $this->name;
     }
+
+    public function getTimestamp() : float
+    {
+        return $this->timestamp;
+    }
 }

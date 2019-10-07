@@ -7,9 +7,8 @@ namespace OpenTelemetry\Tracing;
 class Tracer
 {
     private $active;
-    private $tail = [];
-
     private $spans = [];
+    private $tail = [];
 
     public function __construct(SpanContext $context = null)
     {

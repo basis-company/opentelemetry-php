@@ -2,17 +2,20 @@
 
 declare(strict_types=1);
 
+use OpenTelemetry\Tracing\Builder;
+use OpenTelemetry\Tracing\Exporter\ZipkinExporter;
+use OpenTelemetry\Tracing\SpanContext;
+use OpenTelemetry\Tracing\Status;
+use OpenTelemetry\Tracing\Tracer;
 use PHPUnit\Framework\TestCase;
-
-use OpenTelemetry\Tracing\{Builder, SpanContext, Status, Tracer};
 
 class TracingTest extends TestCase
 {
     public function testContextGenerationAndRestore()
     {
         $spanContext = SpanContext::generate();
-        $this->assertSame(strlen($spanContext->getTraceId()), 16);
-        $this->assertSame(strlen($spanContext->getSpanId()), 8);
+        $this->assertSame(strlen($spanContext->getTraceId()), 32);
+        $this->assertSame(strlen($spanContext->getSpanId()), 16);
 
         $spanContext2 = SpanContext::generate();
         $this->assertNotSame($spanContext->getTraceId(), $spanContext2->getTraceId());
@@ -40,6 +43,25 @@ class TracingTest extends TestCase
         $this->assertSame($database->getName(), 'database');
         $database->setName('tarantool');
         $this->assertSame($database->getName(), 'tarantool');
+    }
+
+    public function testNestedSpans()
+    {
+        $tracer = new Tracer();
+
+        $guard = $tracer->createSpan('guard.validate');
+        $connection = $tracer->createSpan('guard.database.connection');
+        $procedure = $tracer->createSpan('guard.procedure.registration')->end();
+        $connection->end();
+        $policy = $tracer->createSpan('policy.describe')->end();
+
+        $guard->end();
+
+        $this->assertSame($connection->getParentSpanContext(), $guard->getSpanContext());
+        $this->assertSame($procedure->getParentSpanContext(), $connection->getSpanContext());
+        $this->assertSame($policy->getParentSpanContext(), $guard->getSpanContext());
+
+        $this->assertCount(5, $tracer->getSpans());
     }
 
     public function testCreateSpan()
@@ -190,5 +212,49 @@ class TracingTest extends TestCase
         $this->assertSame($request->getParentSpanContext()->getSpanId(), $global->getSpanContext()->getSpanId());
         $this->assertNull($global->getParentSpanContext());
         $this->assertNotNull($request->getParentSpanContext());
+    }
+
+    public function testSerialization()
+    {
+        $tracer = new Tracer();
+        $span = $tracer->createSpan('serializable');
+        $span->setAttribute('attribute', 'value');
+        $span->addEvent('greet', [ 'name' => 'nekufa' ]);
+
+        $serialized = serialize($span);
+        $unserialized = unserialize($serialized);
+
+        $this->assertSame($span->getName(), $unserialized->getName());
+        $this->assertSame($span->getStart(), $unserialized->getStart());
+        $this->assertSame($span->getEnd(), $unserialized->getEnd());
+
+        $this->assertSame($unserialized->getAttribute('attribute'), 'value');
+        $this->assertCount(1, $unserialized->getEvents());
+        [$event] = $unserialized->getEvents();
+        $this->assertSame($event->getName(), 'greet');
+        $this->assertSame($event->getAttribute('name'), 'nekufa');
+
+        return $tracer;
+    }
+
+    public function testZipkinConverter()
+    {
+        $tracer = new Tracer();
+        $span = $tracer->createSpan('guard.validate');
+        $span->setAttribute('service', 'guard');
+        $event = $span->addEvent('validators.list', [ 'job' => 'stage.updateTime' ]);
+        $span->end();
+
+        $exporter = new ZipkinExporter();
+        $row = $exporter->convert($span);
+        $this->assertSame($row['name'], $span->getName());
+
+        $this->assertSame($row['tags'], $span->getAttributes());
+        $this->assertSame($row['tags']['service'], $span->getAttribute('service'));
+
+        $this->assertCount(1, $row['annotations']);
+        [$annotation] = $row['annotations'];
+        $this->assertSame($annotation['value'], $event->getName());
+        $this->assertSame($annotation['timestamp'], 1000000 * $event->getTimestamp());
     }
 }

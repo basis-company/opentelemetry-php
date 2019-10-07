@@ -11,12 +11,12 @@ class SpanContext
 
     public static function generate()
     {
-        return self::fork(random_bytes(16));
+        return self::fork(bin2hex(random_bytes(16)));
     }
 
     public static function fork(string $traceId)
     {
-        return self::restore($traceId, random_bytes(8));
+        return self::restore($traceId, bin2hex(random_bytes(8)));
     }
 
     public static function restore(string $traceId, string $spanId)

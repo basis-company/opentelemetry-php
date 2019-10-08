@@ -37,6 +37,12 @@ class Span
         return $this->parentSpanContext;
     }
 
+    public function setParentSpanContext(SpanContext $parentSpanContext = null) : self
+    {
+        $this->parentSpanContext = $parentSpanContext;
+        return $this;
+    }
+
     public function end(Status $status = null) : self
     {
         $this->end = microtime(true);

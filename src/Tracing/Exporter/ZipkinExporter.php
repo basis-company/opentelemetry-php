@@ -30,6 +30,9 @@ class ZipkinExporter extends Exporter
             if (!array_key_exists('tags', $row)) {
                 $row['tags'] = [];
             }
+            if (is_bool($v)) {
+                $v = (string) $v;
+            }
             $row['tags'][$k] = $v;
         }
 

@@ -260,12 +260,12 @@ class TracingTest extends TestCase
 
         $this->assertSame(
             $unserialized->getEvents()[0]->getName(),
-            $span->getEvents()[0]->getName(),
+            $span->getEvents()[0]->getName()
         );
 
         $this->assertSame(
             $unserialized->getEvents()[0]->getTimestamp(),
-            $span->getEvents()[0]->getTimestamp(),
+            $span->getEvents()[0]->getTimestamp()
         );
     }
 

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace OpenTelemetry\Tracing\Exporter;
+namespace OpenTelemetry\Exporter;
 
-use OpenTelemetry\Tracing\Exporter;
+use OpenTelemetry\Exporter;
 use OpenTelemetry\Tracing\Span;
 use OpenTelemetry\Tracing\Tracer;
 
@@ -12,7 +12,7 @@ class ZipkinExporter extends Exporter
 {
     private $endpoint;
 
-    public function convert(Span $span) : array
+    public function convertSpan(Span $span) : array
     {
         $row = [
             'id' => $span->getSpanContext()->getSpanId(),

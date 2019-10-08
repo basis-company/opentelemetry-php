@@ -2,18 +2,21 @@
 
 declare(strict_types=1);
 
-namespace OpenTelemetry\Tracing;
+namespace OpenTelemetry;
+
+use OpenTelemetry\Tracing\Span;
+use OpenTelemetry\Tracing\Tracer;
 
 abstract class Exporter
 {
-    abstract public function convert(Span $span) : array;
+    abstract public function convertSpan(Span $span) : array;
 
     public function flush(Tracer $tracer, Transport $transport) : int
     {
         $data = [];
 
         foreach ($tracer->getSpans() as $span) {
-            $data[] = $this->convert($span);
+            $data[] = $this->convertSpan($span);
         }
 
         if (count($data)) {

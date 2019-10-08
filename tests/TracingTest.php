@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
+use OpenTelemetry\Exporter\BasisExporter;
+use OpenTelemetry\Exporter\ZipkinExporter;
 use OpenTelemetry\Tracing\Builder;
-use OpenTelemetry\Tracing\Exporter\ZipkinExporter;
 use OpenTelemetry\Tracing\SpanContext;
 use OpenTelemetry\Tracing\Status;
 use OpenTelemetry\Tracing\Tracer;
+use OpenTelemetry\Transport\TarantoolQueueTransport;
 use PHPUnit\Framework\TestCase;
 
 class TracingTest extends TestCase
@@ -237,6 +239,36 @@ class TracingTest extends TestCase
         return $tracer;
     }
 
+    public function testBasisConverter()
+    {
+        $tracer = new Tracer();
+        $span = $tracer->createSpan('guard.validate');
+        $span->setAttribute('service', 'guard');
+        $event = $span->addEvent('validators.list', [ 'job' => 'stage.updateTime' ]);
+        $span->end();
+
+        $exporter = new BasisExporter();
+        $row = $exporter->convertSpan($span);
+        $this->assertSame($row['traceId'], $span->getSpanContext()->getTraceId());
+        $this->assertSame($row['spanId'], $span->getSpanContext()->getSpanId());
+        $this->assertSame($row['parentSpanId'], $span->getParentSpanContext()->getSpanId());
+
+        $this->assertNotNull($row['body']);
+        $unserialized = unserialize($row['body']);
+        $this->assertSame($unserialized->getName(), $span->getName());
+        $this->assertSame($unserialized->getAttributes(), $span->getAttributes());
+
+        $this->assertSame(
+            $unserialized->getEvents()[0]->getName(),
+            $span->getEvents()[0]->getName(),
+        );
+
+        $this->assertSame(
+            $unserialized->getEvents()[0]->getTimestamp(),
+            $span->getEvents()[0]->getTimestamp(),
+        );
+    }
+
     public function testZipkinConverter()
     {
         $tracer = new Tracer();
@@ -246,7 +278,7 @@ class TracingTest extends TestCase
         $span->end();
 
         $exporter = new ZipkinExporter();
-        $row = $exporter->convert($span);
+        $row = $exporter->convertSpan($span);
         $this->assertSame($row['name'], $span->getName());
 
         $this->assertSame($row['tags'], $span->getAttributes());

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace OpenTelemetry\Tracing\Transport;
+namespace OpenTelemetry\Transport;
 
-use OpenTelemetry\Tracing\Transport;
+use OpenTelemetry\Transport;
 use Tarantool\Queue\Queue;
 use Exception;
 

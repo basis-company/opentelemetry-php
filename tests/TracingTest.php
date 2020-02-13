@@ -249,24 +249,8 @@ class TracingTest extends TestCase
 
         $exporter = new BasisExporter();
         $row = $exporter->convertSpan($span);
-        $this->assertSame($row['traceId'], $span->getSpanContext()->getTraceId());
-        $this->assertSame($row['spanId'], $span->getSpanContext()->getSpanId());
-        $this->assertSame($row['parentSpanId'], $span->getParentSpanContext()->getSpanId());
-
-        $this->assertNotNull($row['body']);
-        $unserialized = unserialize($row['body']);
-        $this->assertSame($unserialized->getName(), $span->getName());
-        $this->assertSame($unserialized->getAttributes(), $span->getAttributes());
-
-        $this->assertSame(
-            $unserialized->getEvents()[0]->getName(),
-            $span->getEvents()[0]->getName()
-        );
-
-        $this->assertSame(
-            $unserialized->getEvents()[0]->getTimestamp(),
-            $span->getEvents()[0]->getTimestamp()
-        );
+        $span2 = $exporter->restoreSpan($row);
+        $this->assertSame(serialize($span), serialize($span2));
     }
 
     public function testZipkinConverter()

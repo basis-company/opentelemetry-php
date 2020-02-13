@@ -38,6 +38,10 @@ class BasisExporter extends Exporter
 
         $span->setInterval($start, $end);
 
+        if ($end !== null && !$span->getStatus()) {
+            $span->setStatus(new Status(Status::OK));
+        }
+
         if ($statusCode) {
             $span->setStatus(new Status($statusCode));
         }

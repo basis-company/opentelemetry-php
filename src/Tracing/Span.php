@@ -94,7 +94,7 @@ class Span
         return $this->name;
     }
 
-    public function setInterval(float $start, float $end) : self
+    public function setInterval(float $start, ?float $end) : self
     {
         $this->start = $start;
         $this->end = $end;

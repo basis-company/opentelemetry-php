@@ -26,6 +26,9 @@ class BasisExporter extends Exporter
         $span = (new Span($name ?: 'tracer', $context, $parent));
 
         if ($attributes) {
+            if (is_object($attributes)) {
+                $attributes = get_object_vars($attributes);
+            }
             $span->setAttributes($attributes);
         }
 

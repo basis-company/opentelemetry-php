@@ -10,10 +10,10 @@ class Builder
 
     public static function create()
     {
-        return new self;
+        return new self();
     }
 
-    public function setSpanContext(SpanContext $spanContext) : self
+    public function setSpanContext(SpanContext $spanContext): self
     {
         $this->spanContext = $spanContext;
         return $this;

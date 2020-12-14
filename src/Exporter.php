@@ -9,9 +9,9 @@ use OpenTelemetry\Tracing\Tracer;
 
 abstract class Exporter
 {
-    abstract public function convertSpan(Span $span) : array;
+    abstract public function convertSpan(Span $span): array;
 
-    public function flush(Tracer $tracer, Transport $transport) : int
+    public function flush(Tracer $tracer, Transport $transport): int
     {
         $data = [];
 

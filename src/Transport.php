@@ -6,5 +6,5 @@ namespace OpenTelemetry;
 
 interface Transport
 {
-    public function write(array $data) : bool;
+    public function write(array $data): bool;
 }

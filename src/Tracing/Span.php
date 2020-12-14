@@ -27,23 +27,23 @@ class Span
         $this->start = microtime(true);
     }
 
-    public function getSpanContext() : SpanContext
+    public function getSpanContext(): SpanContext
     {
         return $this->spanContext;
     }
 
-    public function getParentSpanContext() : ?SpanContext
+    public function getParentSpanContext(): ?SpanContext
     {
         return $this->parentSpanContext;
     }
 
-    public function setParentSpanContext(SpanContext $parentSpanContext = null) : self
+    public function setParentSpanContext(SpanContext $parentSpanContext = null): self
     {
         $this->parentSpanContext = $parentSpanContext;
         return $this;
     }
 
-    public function end(Status $status = null) : self
+    public function end(Status $status = null): self
     {
         $this->end = microtime(true);
         if (!$this->status && !$status) {
@@ -65,23 +65,23 @@ class Span
         return $this->end;
     }
 
-    public function setStatus(Status $status) : self
+    public function setStatus(Status $status): self
     {
         $this->status = $status;
         return $this;
     }
 
-    public function getStatus() : ?Status
+    public function getStatus(): ?Status
     {
         return $this->status;
     }
 
-    public function isRecordingEvents() : bool
+    public function isRecordingEvents(): bool
     {
-        return is_null($this->end);
+        return $this->end === null;
     }
 
-    public function getDuration() : ?float
+    public function getDuration(): ?float
     {
         if (!$this->end) {
             return null;
@@ -89,19 +89,19 @@ class Span
         return $this->end - $this->start;
     }
 
-    public function getName() : string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setInterval(float $start, ?float $end) : self
+    public function setInterval(float $start, ?float $end): self
     {
         $this->start = $start;
         $this->end = $end;
         return $this;
     }
 
-    public function setName(string $name) : self
+    public function setName(string $name): self
     {
         $this->name = $name;
         return $this;
@@ -115,7 +115,7 @@ class Span
         return $this->attributes[$key];
     }
 
-    public function setAttribute(string $key, $value) : self
+    public function setAttribute(string $key, $value): self
     {
         $this->throwExceptionIfReadonly();
 
@@ -123,12 +123,12 @@ class Span
         return $this;
     }
 
-    public function getAttributes() : array
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
 
-    public function setAttributes(array $attributes) : self
+    public function setAttributes(array $attributes): self
     {
         $this->throwExceptionIfReadonly();
 
@@ -139,7 +139,7 @@ class Span
         return $this;
     }
 
-    public function addEvent(string $name, array $attributes = [], float $timestamp = null) : Event
+    public function addEvent(string $name, array $attributes = [], float $timestamp = null): Event
     {
         $this->throwExceptionIfReadonly();
 

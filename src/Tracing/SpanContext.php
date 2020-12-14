@@ -30,12 +30,12 @@ class SpanContext
         $this->spanId = $spanId;
     }
 
-    public function getTraceId() : string
+    public function getTraceId(): string
     {
         return $this->traceId;
     }
 
-    public function getSpanId() : string
+    public function getSpanId(): string
     {
         return $this->spanId;
     }

@@ -12,7 +12,7 @@ class Event
 
     public function __construct(string $name, array $attributes = [], $timestamp = null)
     {
-        if (is_null($timestamp)) {
+        if ($timestamp === null) {
             $timestamp = microtime(true);
         }
         $this->name = $name;
@@ -28,18 +28,18 @@ class Event
         return $this->attributes[$key];
     }
 
-    public function setAttribute(string $key, $value) : self
+    public function setAttribute(string $key, $value): self
     {
         $this->attributes[$key] = $value;
         return $this;
     }
 
-    public function getAttributes() : array
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
 
-    public function setAttributes(array $attributes) : self
+    public function setAttributes(array $attributes): self
     {
         $this->attributes = [];
         foreach ($attributes as $k => $v) {
@@ -48,12 +48,12 @@ class Event
         return $this;
     }
 
-    public function getName() : string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function getTimestamp() : float
+    public function getTimestamp(): float
     {
         return $this->timestamp;
     }

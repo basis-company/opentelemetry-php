@@ -16,7 +16,7 @@ class Tracer
         $this->active = $this->generateSpanInstance('tracer', $context);
     }
 
-    public function getActiveSpan() : Span
+    public function getActiveSpan(): Span
     {
         while (count($this->tail) && $this->active->getEnd()) {
             $this->active = array_pop($this->tail);
@@ -24,13 +24,13 @@ class Tracer
         return $this->active;
     }
 
-    public function setActive(Span $span) : Span
+    public function setActive(Span $span): Span
     {
         $this->tail[] = $this->active;
         return $this->active = $span;
     }
 
-    public function createSpan(string $name) : Span
+    public function createSpan(string $name): Span
     {
         $parent = $this->getActiveSpan()->getSpanContext();
         $context = SpanContext::fork($parent->getTraceId());
@@ -38,12 +38,12 @@ class Tracer
         return $this->setActive($span);
     }
 
-    public function getSpans() : array
+    public function getSpans(): array
     {
         return $this->spans;
     }
 
-    private function generateSpanInstance($name, SpanContext $context) : Span
+    private function generateSpanInstance($name, SpanContext $context): Span
     {
         $parent = null;
         if ($this->active) {

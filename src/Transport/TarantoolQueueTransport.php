@@ -12,12 +12,12 @@ class TarantoolQueueTransport implements Transport
 {
     private $queue;
 
-    public function write(array $data) : bool
+    public function write(array $data): bool
     {
         return $this->getQueue()->put($data) ? true : false;
     }
 
-    public function getQueue() : Queue
+    public function getQueue(): Queue
     {
         if (!$this->queue) {
             throw new Exception("Queue should be set");
@@ -25,7 +25,7 @@ class TarantoolQueueTransport implements Transport
         return $this->queue;
     }
 
-    public function setQueue(Queue $queue) : self
+    public function setQueue(Queue $queue): self
     {
         $this->queue = $queue;
         return $this;

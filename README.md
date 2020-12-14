@@ -1,7 +1,10 @@
 # OpenTelemetry php library
+[![License](https://poser.pugx.org/basis-company/opentelemetry/license.png)](https://packagist.org/packages/basis-company/opentelemetry)
 [![Build Status](https://travis-ci.org/basis-company/opentelemetry-php.svg?branch=master)](https://travis-ci.org/basis-company/opentelemetry-php)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/basis-company/opentelemetry-php/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/basis-company/opentelemetry-php/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/basis-company/opentelemetry-php/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/basis-company/opentelemetry-php/?branch=master)
+[![Latest Version](https://img.shields.io/github/release/basis-company/opentelemetry-php.svg?style=flat-square)](https://github.com/basis-company/opentelemetry-php/releases)
+[![Total Downloads](https://img.shields.io/packagist/dt/basis-company/opentelemetry.svg?style=flat-square)](https://packagist.org/packages/basis-company/opentelemetry)
 
 - [Installation](#installation)
 - [Tracing](#tracing)

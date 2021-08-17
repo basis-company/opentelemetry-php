@@ -1,4 +1,8 @@
+# DEPRECATED
+Use [basis-company/telemetry](https://github.com/basis-company/telemetry.php) instead!
+
 # OpenTelemetry php library
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 [![License](https://poser.pugx.org/basis-company/opentelemetry/license.png)](https://packagist.org/packages/basis-company/opentelemetry)
 [![Build Status](https://travis-ci.org/basis-company/opentelemetry-php.svg?branch=master)](https://travis-ci.org/basis-company/opentelemetry-php)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/basis-company/opentelemetry-php/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/basis-company/opentelemetry-php/?branch=master)
